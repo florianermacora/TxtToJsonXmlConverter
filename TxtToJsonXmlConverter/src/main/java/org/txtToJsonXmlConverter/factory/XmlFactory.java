@@ -1,9 +1,8 @@
-package org.TxtToJsonXmlConverter.factory;
+package org.txtToJsonXmlConverter.factory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.TxtToJsonXmlConverter.dto.OutputFileDto;
+import org.txtToJsonXmlConverter.dto.OutputFileDto;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

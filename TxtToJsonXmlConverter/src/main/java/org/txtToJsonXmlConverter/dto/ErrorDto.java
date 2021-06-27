@@ -1,4 +1,4 @@
-package org.TxtToJsonXmlConverter.dto;
+package org.txtToJsonXmlConverter.dto;
 
 import lombok.Getter;
 import lombok.Setter;

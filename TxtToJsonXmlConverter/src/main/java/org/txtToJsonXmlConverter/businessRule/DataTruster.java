@@ -1,12 +1,14 @@
-package org.TxtToJsonXmlConverter.businessRule;
+package org.txtToJsonXmlConverter.businessRule;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.TxtToJsonXmlConverter.dao.ReferenceDao;
-import org.TxtToJsonXmlConverter.dto.ErrorDto;
-import org.TxtToJsonXmlConverter.dto.ReferenceDto;
-import org.TxtToJsonXmlConverter.enumeration.ColorType;
-import org.TxtToJsonXmlConverter.enumeration.ErrorDataType;
+import lombok.extern.log4j.Log4j;
+import org.slf4j.Logger;
+import org.txtToJsonXmlConverter.dao.ReferenceDao;
+import org.txtToJsonXmlConverter.dto.ErrorDto;
+import org.txtToJsonXmlConverter.dto.ReferenceDto;
+import org.txtToJsonXmlConverter.enumeration.ColorType;
+import org.txtToJsonXmlConverter.enumeration.ErrorDataType;
 
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ public class DataTruster {
 
     private static final Integer NUMBER_OF_ELEMENT = 4;
     private static final Integer NUM_REF_LENGTH = 10;
+    private static final String SEPARATOR = ";";
 
     @Getter
     @Setter
@@ -25,18 +28,24 @@ public class DataTruster {
     @Getter
     private Boolean isDataFail;
 
-    private Boolean refNumNotError = true;
-    private Boolean typeNotError = true;
-    private Boolean priceNotError = true;
-    private Boolean sizeNotError = true;
-    private Boolean allNotError = true;
+    private Boolean refNumNotError;
+    private Boolean typeNotError;
+    private Boolean priceNotError;
+    private Boolean sizeNotError;
+    private Boolean allNotError;
 
     public DataTruster() {
         errors = new ArrayList<>();
+        refNumNotError = true;
+        typeNotError = true;
+        priceNotError = true;
+        sizeNotError = true;
+        allNotError = true;
+        isDataFail = false;
     }
 
-    public void checkData(String line, String separator, Integer lineNumber) {
-        String[] explodeLine = line.split(separator);
+    public void checkData(String line, Integer lineNumber) {
+        String[] explodeLine = line.split(SEPARATOR);
 
         // Vérification de l'éxistance de chaque élément
         ReferenceDao reference = checkExplodeStr(explodeLine, line, lineNumber);
@@ -58,14 +67,12 @@ public class DataTruster {
             }
         }
 
-        if (!allNotError && !refNumNotError && !typeNotError && !priceNotError && !sizeNotError) {
+        // Alimentation de la donnée finale une fois vérifiée
+        if (!allNotError || !refNumNotError || !typeNotError || !priceNotError || !sizeNotError) {
             isDataFail = true;
         } else {
-            referenceDto.setNumReference(reference.getNumReference());
-            ;
-            referenceDto.setType(reference.getType());
-            referenceDto.setPrice(Double.parseDouble(reference.getPrice()));
-            referenceDto.setSize(Integer.parseInt(reference.getSize()));
+            referenceDto = new ReferenceDto(reference.getNumReference(), reference.getType(),
+                    Double.parseDouble(reference.getPrice()), Integer.parseInt(reference.getSize()));
         }
 
     }
@@ -100,12 +107,6 @@ public class DataTruster {
             priceNotError = false;
         }
 
-        // Vérification que le nombre àprès la virgule n'est pas supérieur à 2
-        if (priceNotError && price.contains(".") && (price.split("\\.").length > 2 ||
-                (price.split("\\.").length == 2 && Integer.parseInt(price.split("\\.")[1]) > 2))) {
-            addError(line, lineNumber, ErrorDataType.NOT_A_PRICE.getErrorDataType());
-            priceNotError = false;
-        }
     }
 
     /**
@@ -178,19 +179,19 @@ public class DataTruster {
                 switch (i) {
                     case 0:
                         addError(line, lineNumber, ErrorDataType.NUM_REFERENCE_MISSING.getErrorDataType());
-                        refNumNotError = false;
+                        allNotError = false;
                         break;
                     case 1:
                         addError(line, lineNumber, ErrorDataType.TYPE_MISSING.getErrorDataType());
-                        typeNotError = false;
+                        allNotError = false;
                         break;
                     case 2:
                         addError(line, lineNumber, ErrorDataType.PRICE_MISSING.getErrorDataType());
-                        priceNotError = false;
+                        allNotError = false;
                         break;
                     default:
                         addError(line, lineNumber, ErrorDataType.SIZE_MISSING.getErrorDataType());
-                        sizeNotError = false;
+                        allNotError = false;
                         break;
                 }
             }

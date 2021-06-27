@@ -1,7 +1,7 @@
-package org.TxtToJsonXmlConverter.factory;
+package org.txtToJsonXmlConverter.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.TxtToJsonXmlConverter.dto.OutputFileDto;
+import org.txtToJsonXmlConverter.dto.OutputFileDto;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

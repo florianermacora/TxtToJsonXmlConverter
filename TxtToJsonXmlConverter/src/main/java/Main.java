@@ -1,8 +1,8 @@
-import org.TxtToJsonXmlConverter.businessRule.DataTruster;
-import org.TxtToJsonXmlConverter.dto.OutputFileDto;
-import org.TxtToJsonXmlConverter.enumeration.ErrorFileType;
-import org.TxtToJsonXmlConverter.factory.JsonFactory;
-import org.TxtToJsonXmlConverter.factory.XmlFactory;
+import org.txtToJsonXmlConverter.businessRule.DataTruster;
+import org.txtToJsonXmlConverter.dto.OutputFileDto;
+import org.txtToJsonXmlConverter.enumeration.ErrorFileType;
+import org.txtToJsonXmlConverter.factory.JsonFactory;
+import org.txtToJsonXmlConverter.factory.XmlFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
@@ -16,7 +16,6 @@ public class Main {
     public static final Integer NUMBER_PARAMETER = 3;
     public static final String FORMAT_JSON = "JSON";
     public static final String FORMAT_XML = "XML";
-    private static final String SEPARATOR = ";";
 
     public static void main(String[] args) {
         // Contrôle sur les valeurs d'entrée
@@ -42,7 +41,7 @@ public class Main {
                     // Vérification sur la donnée
                     DataTruster dataTruster = new DataTruster();
                     String data = myReader.nextLine();
-                    dataTruster.checkData(data, SEPARATOR, lineNumber);
+                    dataTruster.checkData(data, lineNumber);
 
                     // Créaation de la donnée final
                     if (dataTruster.getIsDataFail()) {

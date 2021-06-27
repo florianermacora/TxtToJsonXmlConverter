@@ -1,4 +1,4 @@
-package org.TxtToJsonXmlConverter.enumeration;
+package org.txtToJsonXmlConverter.enumeration;
 
 public enum ColorType {
 
