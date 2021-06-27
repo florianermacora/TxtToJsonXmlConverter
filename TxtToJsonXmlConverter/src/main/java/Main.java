@@ -1,4 +1,5 @@
-import org.TxtToJsonXmlConverter.ErrorFileType;
+import org.TxtToJsonXmlConverter.businessRule.DataTruster;
+import org.TxtToJsonXmlConverter.enumeration.ErrorFileType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
@@ -12,9 +13,10 @@ public class Main {
     public static final Integer NUMBER_PARAMETER = 3;
     public static final String FORMAT_JSON = "JSON";
     public static final String FORMAT_XML = "XML";
+    private static final String SEPARATOR = ";";
 
     public static void main(String[] args) {
-        // Conttôle sur les valeurs d'entrée
+        // Contrôle sur les valeurs d'entrée
         if (args.length < NUMBER_PARAMETER){
             System.out.println(ErrorFileType.TOO_LESS_ARG.getErrorFileType());
         }
@@ -26,19 +28,25 @@ public class Main {
         }
         else{
             try {
+
+                // Lecture du fichier
                 File file = new File(args[0]);
                 String fileName = file.getName();
                 Scanner myReader = new Scanner(file);
 
-                while(myReader.hasNextLine()){
+                Integer lineNumber = 1;
 
+                while(myReader.hasNextLine()){
+                    // Vérification sur la donnée
+                    DataTruster dataTruster = new DataTruster();
+                    String data = myReader.nextLine();
+                    dataTruster.checkData(data, SEPARATOR, lineNumber);
+
+                    lineNumber ++;
                 }
             }
             catch (FileNotFoundException e){
-                System.out.println(ErrorFileType.INPUT_FILE_MISSING.getErrorFileType())
-            }
-            catch (IOException e){
-                System.out.println(ErrorFileType.OUTPUT_PROBLEM.getErrorFileType())
+                System.out.println(ErrorFileType.INPUT_FILE_MISSING.getErrorFileType());
             }
         }
     }
