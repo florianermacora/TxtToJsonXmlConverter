@@ -16,4 +16,8 @@ public class OutputFileDto {
     @Getter
     @Setter
     private ArrayList<ErrorDto> errors;
+
+    public OutputFileDto(String fileName) {
+        this.fileName = fileName;
+    }
 }

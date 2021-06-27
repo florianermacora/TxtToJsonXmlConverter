@@ -1,5 +1,8 @@
 import org.TxtToJsonXmlConverter.businessRule.DataTruster;
+import org.TxtToJsonXmlConverter.dto.OutputFileDto;
 import org.TxtToJsonXmlConverter.enumeration.ErrorFileType;
+import org.TxtToJsonXmlConverter.factory.JsonFactory;
+import org.TxtToJsonXmlConverter.factory.XmlFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
@@ -17,16 +20,13 @@ public class Main {
 
     public static void main(String[] args) {
         // Contrôle sur les valeurs d'entrée
-        if (args.length < NUMBER_PARAMETER){
+        if (args.length < NUMBER_PARAMETER) {
             System.out.println(ErrorFileType.TOO_LESS_ARG.getErrorFileType());
-        }
-        else if (args.length > NUMBER_PARAMETER){
+        } else if (args.length > NUMBER_PARAMETER) {
             System.out.println(ErrorFileType.TOO_MUCH_ARG.getErrorFileType());
-        }
-        else if (!args[1].equals(FORMAT_XML) && !args[1].equals(FORMAT_JSON)){
+        } else if (!args[1].equals(FORMAT_XML) && !args[1].equals(FORMAT_JSON)) {
             System.out.println(ErrorFileType.FORMAT_NOT_SUPPORTED.getErrorFileType());
-        }
-        else{
+        } else {
             try {
 
                 // Lecture du fichier
@@ -34,18 +34,43 @@ public class Main {
                 String fileName = file.getName();
                 Scanner myReader = new Scanner(file);
 
+                OutputFileDto outputFileDto = new OutputFileDto(fileName);
+
                 Integer lineNumber = 1;
 
-                while(myReader.hasNextLine()){
+                while (myReader.hasNextLine()) {
                     // Vérification sur la donnée
                     DataTruster dataTruster = new DataTruster();
                     String data = myReader.nextLine();
                     dataTruster.checkData(data, SEPARATOR, lineNumber);
 
-                    lineNumber ++;
+                    // Créaation de la donnée final
+                    if (dataTruster.getIsDataFail()) {
+                        outputFileDto.getErrors().addAll(dataTruster.getErrors());
+                    } else {
+                        outputFileDto.getReferences().add(dataTruster.getReferenceDto());
+                    }
+
+                    lineNumber++;
                 }
-            }
-            catch (FileNotFoundException e){
+                myReader.close();
+
+                if (args[1].equals(FORMAT_JSON)) {
+                    try {
+                        JsonFactory jsonFactory = new JsonFactory();
+                        jsonFactory.createJsonFile(outputFileDto, args[2]);
+                    } catch (IOException e) {
+                        System.out.println(ErrorFileType.OUTPUT_PTOBLEM.getErrorFileType());
+                    }
+                } else {
+                    try {
+                        XmlFactory xmlFactory = new XmlFactory();
+                        xmlFactory.createXmlFile(outputFileDto, args[2]);
+                    } catch (IOException e) {
+                        System.out.println(ErrorFileType.OUTPUT_PTOBLEM.getErrorFileType());
+                    }
+                }
+            } catch (FileNotFoundException e) {
                 System.out.println(ErrorFileType.INPUT_FILE_MISSING.getErrorFileType());
             }
         }

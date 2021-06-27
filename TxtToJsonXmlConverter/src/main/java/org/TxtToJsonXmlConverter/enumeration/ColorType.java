@@ -9,11 +9,11 @@ public enum ColorType {
     private String color;
 
     private ColorType(String color) {
-        this.color = color ;
+        this.color = color;
     }
 
     public String getColor() {
-        return  this.color ;
+        return this.color;
     }
 
     public static boolean contains(String colorTest) {

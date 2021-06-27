@@ -18,8 +18,12 @@ public enum ErrorDataType {
 
     private String errorDataType;
 
-    private ErrorDataType(String errorDataType) {this.errorDataType = errorDataType;}
+    private ErrorDataType(String errorDataType) {
+        this.errorDataType = errorDataType;
+    }
 
-    public String getErrorDataType() { return errorDataType;}
+    public String getErrorDataType() {
+        return errorDataType;
+    }
 
 }
